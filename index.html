@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#7b3f27" />
+  <meta name="apple-mobile-web-app-title" content="Lock-In" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>Lock-In Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Lock-In<br />Tracker</h1>
+        <p class="subtitle">A simple personal dashboard for training, calories, routines, prayer, chores, and weekly review.</p>
+      </div>
+
+      <div class="date-widget">
+        <button class="date-pill" id="todayLabel" aria-expanded="false" aria-controls="datePanel"></button>
+        <div class="date-panel" id="datePanel">
+          <div class="section-title">
+            <h2>Navigate Time</h2>
+            <span class="tiny" id="datePanelSelectedLabel"></span>
+          </div>
+          <p class="tiny">Pick a day directly, or jump by day, week, month, or year. The app clock rolls over to the new day while open.</p>
+
+          <div class="date-input-row">
+            <div>
+              <label class="tiny" for="datePicker">Selected date</label>
+              <input id="datePicker" type="date" />
+            </div>
+            <button id="goToToday">Today</button>
+          </div>
+
+          <div class="date-controls">
+            <button class="secondary" data-jump="day" data-direction="-1">← Day</button>
+            <button class="secondary" data-jump="day" data-direction="1">Day →</button>
+            <button class="secondary" data-jump="week" data-direction="-1">← Week</button>
+            <button class="secondary" data-jump="week" data-direction="1">Week →</button>
+            <button class="secondary" data-jump="month" data-direction="-1">← Month</button>
+            <button class="secondary" data-jump="month" data-direction="1">Month →</button>
+            <button class="secondary" data-jump="year" data-direction="-1">← Year</button>
+            <button class="secondary" data-jump="year" data-direction="1">Year →</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="App sections">
+      <button class="tab-button active" data-tab="dashboard">Dashboard</button>
+      <button class="tab-button" data-tab="workouts">Workout Plan</button>
+      <button class="tab-button" data-tab="meals">Meals</button>
+      <button class="tab-button" data-tab="spiritual">Spiritual</button>
+      <button class="tab-button" data-tab="analytics">Analytics</button>
+      <button class="tab-button" data-tab="settings">Settings</button>
+    </nav>
+
+    <section id="dashboard" class="tab-panel active">
+      <section class="grid dashboard-grid">
+        <div class="card span-4 metric">
+          <div class="number"><span id="calorieStatus">—</span></div>
+          <div class="label">calorie target status</div>
+          <div class="progress-bar"><div class="progress-fill" id="calorieProgress"></div></div>
+        </div>
+
+        <div class="card span-4 metric">
+          <div class="number"><span id="routineScore">0</span>%</div>
+          <div class="label">today's routine completion</div>
+          <div class="progress-bar"><div class="progress-fill" id="routineProgress"></div></div>
+        </div>
+
+        <div class="card span-4 metric">
+          <div class="number"><span id="weeklyWorkoutCount">0</span>/8</div>
+          <div class="label">workouts completed this week</div>
+          <div class="progress-bar"><div class="progress-fill" id="workoutProgress"></div></div>
+        </div>
+
+        <div class="card span-8">
+          <div class="section-title">
+            <h2>Selected Day</h2>
+            <span class="tiny" id="selectedDayLabel"></span>
+          </div>
+
+          <div class="day-tabs" id="dayTabs"></div>
+
+          <h3>Morning Routine</h3>
+          <div class="checklist" id="morningList"></div>
+
+          <br />
+
+          <h3>Evening Routine</h3>
+          <div class="checklist" id="eveningList"></div>
+        </div>
+
+        <div class="card span-4">
+          <div class="section-title">
+            <h2>Calories</h2>
+            <span class="tiny">from Meals</span>
+          </div>
+          <div class="calorie-grid">
+            <div>
+              <label class="tiny" for="calorieTarget">Target</label>
+              <input id="calorieTarget" type="number" min="0" step="50" inputmode="numeric" />
+            </div>
+            <div>
+              <label class="tiny" for="calorieActual">Actual</label>
+              <input id="calorieActual" type="number" min="0" step="50" readonly />
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="secondary" id="saveCalorieTarget">Save Target</button>
+          </div>
+          <p class="tiny">Actual calories are calculated automatically from meals and snacks.</p>
+
+          <hr />
+
+          <div class="section-title">
+            <h2>Weekly Chores</h2>
+            <span class="tiny" id="choreScoreLabel">0/0</span>
+          </div>
+          <div class="checklist" id="choreList"></div>
+        </div>
+
+        <div class="card span-6">
+          <div class="section-title">
+            <h2>Weekly Workout Completion</h2>
+            <span class="tiny" id="dashboardRotationLabel">goal: 8</span>
+          </div>
+          <div id="workoutCompletionList"></div>
+          <div class="button-row">
+            <button class="secondary" id="resetWeek">Reset Week</button>
+          </div>
+        </div>
+
+        <div class="card span-6">
+          <div class="section-title">
+            <h2>Daily Notes</h2>
+            <span class="tiny">autosaves</span>
+          </div>
+          <textarea id="dailyNotes" placeholder="How did today go?"></textarea>
+        </div>
+      </section>
+    </section>
+
+    <section id="workouts" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Workout Plan</h2>
+            <span class="tiny" id="workoutRotationLabel"></span>
+          </div>
+          <p class="tiny">The strength sessions rotate on a three-week cycle. Use the date widget to move between weeks.</p>
+        </div>
+        <div id="workoutPlanList" class="grid span-12"></div>
+      </section>
+    </section>
+
+    <section id="meals" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Meal & Snack Log</h2>
+            <span class="tiny" id="mealDayLabel"></span>
+          </div>
+          <div class="day-tabs" id="mealDayTabs"></div>
+          <p class="tiny">Write the meal or snack, add calories, and the dashboard updates automatically.</p>
+        </div>
+
+        <div class="card span-12">
+          <div class="meal-grid">
+            <div>
+              <label class="tiny" for="mealName">Meal / snack</label>
+              <input id="mealName" type="text" placeholder="e.g., eggs, toast, Greek yogurt" autocomplete="off" />
+            </div>
+            <div>
+              <label class="tiny" for="mealCalories">Calories</label>
+              <input id="mealCalories" type="number" min="0" step="10" inputmode="numeric" placeholder="450" />
+            </div>
+            <button id="addMeal">Add</button>
+          </div>
+        </div>
+
+        <div class="card span-8">
+          <div class="section-title">
+            <h2>Logged Food</h2>
+            <span class="tiny"><span id="mealTotal">0</span> calories total</span>
+          </div>
+          <div id="mealList"></div>
+        </div>
+
+        <div class="card span-4 metric">
+          <div class="number"><span id="mealRemaining">—</span></div>
+          <div class="label">calories remaining today</div>
+          <div class="progress-bar"><div class="progress-fill" id="mealProgress"></div></div>
+        </div>
+      </section>
+    </section>
+
+    <section id="spiritual" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Spiritual Rule</h2>
+            <span class="tiny" id="spiritualDayLabel"></span>
+          </div>
+          <div class="day-tabs" id="spiritualDayTabs"></div>
+          <p class="tiny">Track prayer, rosary, and spiritual reading for the selected day.</p>
+        </div>
+
+        <div class="card span-12 scripture-box">
+          <div class="section-title">
+            <h2>Today's Observance</h2>
+            <span class="tiny">rosary + scripture</span>
+          </div>
+
+          <div class="observance-grid">
+            <div>
+              <h3 id="rosaryMysteryTitle"></h3>
+              <div class="mini-list" id="rosaryMysteryList"></div>
+              <p class="tiny" id="rosaryMysteryNote"></p>
+            </div>
+
+            <div>
+              <h3 id="scriptureWeekTitle"></h3>
+              <p id="scriptureWeekReading"></p>
+              <p class="tiny">A simple 17-week New Testament plan. Use the date widget to move through weeks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Prayer & Reading</h2>
+            <span class="tiny">daily</span>
+          </div>
+          <div class="checklist" id="spiritualChecklist"></div>
+          <textarea id="spiritualNotes" placeholder="Notes from prayer, reading, confession, Mass, examen, or anything worth remembering."></textarea>
+        </div>
+      </section>
+    </section>
+
+    <section id="analytics" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Analytics</h2>
+            <span class="tiny" id="analyticsDayLabel"></span>
+          </div>
+          <p class="tiny">Summary stats for the selected week, month, rolling 3-month period, and year.</p>
+        </div>
+
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Period Summary</h2>
+            <span class="tiny">week · month · 3 months · year</span>
+          </div>
+          <div class="stat-grid" id="periodAnalyticsGrid"></div>
+        </div>
+      </section>
+    </section>
+
+    <section id="settings" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Settings & Data</h2>
+            <span class="tiny">backup / reset</span>
+          </div>
+          <p class="tiny">Your tracker data is saved in this browser on this device. Export periodically as a backup.</p>
+          <div class="button-row">
+            <button id="exportData">Export Data</button>
+            <button class="danger" id="clearAll">Clear All Data</button>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Home Screen Setup</h2>
+          <p class="tiny">After hosting this folder online, open the site in Safari on your iPhone, use Share, then Add to Home Screen.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
