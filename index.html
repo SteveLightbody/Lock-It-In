@@ -11,6 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icon.svg" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="mobile-polish.css" />
 </head>
 <body>
   <main class="app">
@@ -54,8 +55,10 @@
     <nav class="tabs" aria-label="App sections">
       <button class="tab-button active" data-tab="dashboard">Dashboard</button>
       <button class="tab-button" data-tab="workouts">Workout Plan</button>
+      <button class="tab-button" data-tab="chores">Chores</button>
       <button class="tab-button" data-tab="meals">Meals</button>
       <button class="tab-button" data-tab="spiritual">Spiritual</button>
+      <button class="tab-button" data-tab="tracking">Tracking</button>
       <button class="tab-button" data-tab="analytics">Analytics</button>
       <button class="tab-button" data-tab="settings">Settings</button>
     </nav>
@@ -160,6 +163,24 @@
       </section>
     </section>
 
+
+
+    <section id="chores" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Weekly Chores</h2>
+            <span class="tiny" id="choresTabScoreLabel">0/0 complete</span>
+          </div>
+          <p class="tiny">Weekly reset checklist. Use the date widget to move between weeks.</p>
+        </div>
+
+        <div class="card span-12">
+          <div class="checklist" id="choresTabList"></div>
+        </div>
+      </section>
+    </section>
+
     <section id="meals" class="tab-panel">
       <section class="grid">
         <div class="card span-12">
@@ -241,6 +262,20 @@
           <div class="checklist" id="spiritualChecklist"></div>
           <textarea id="spiritualNotes" placeholder="Notes from prayer, reading, confession, Mass, examen, or anything worth remembering."></textarea>
         </div>
+      </section>
+    </section>
+
+    <section id="tracking" class="tab-panel">
+      <section class="grid">
+        <div class="card span-12">
+          <div class="section-title">
+            <h2>Tracking</h2>
+            <span class="tiny" id="trackingDayLabel"></span>
+          </div>
+          <p class="tiny">Log body measurements and Apple Watch active calories for the selected day.</p>
+        </div>
+
+        <div id="trackingDataPanel" class="grid span-12"></div>
       </section>
     </section>
 
