@@ -247,3 +247,80 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
   .compact-grid .span-6 { grid-column: span 6; }
   .compact-grid .span-3 { grid-column: span 3; }
 }
+
+/* Checkbox/button appearance fix for iOS/Safari
+   Removes the faint native/ghost outline and gives checkboxes a clean, consistent custom look. */
+.check {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.check input[type="checkbox"],
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  margin: 0;
+  display: inline-grid;
+  place-content: center;
+  border: 2px solid rgba(123, 63, 39, 0.42);
+  border-radius: 8px;
+  background: #fffaf4;
+  box-shadow: none;
+  outline: none;
+  flex: 0 0 auto;
+}
+
+.check input[type="checkbox"]::before,
+input[type="checkbox"]::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  transition: transform 120ms ease-in-out;
+  border-radius: 4px;
+  background: var(--accent);
+}
+
+.check input[type="checkbox"]:checked,
+input[type="checkbox"]:checked {
+  border-color: var(--accent);
+  background: #fffaf4;
+}
+
+.check input[type="checkbox"]:checked::before,
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.check input[type="checkbox"]:focus-visible,
+input[type="checkbox"]:focus-visible,
+button:focus-visible,
+.tab-button:focus-visible,
+.day-tab:focus-visible {
+  outline: 3px solid rgba(123, 63, 39, 0.26);
+  outline-offset: 3px;
+}
+
+button,
+.tab-button,
+.day-tab,
+button.secondary,
+button.danger {
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: none;
+}
+
+.check:has(input[type="checkbox"]:checked) {
+  border-color: rgba(123, 63, 39, 0.32);
+  background: rgba(123, 63, 39, 0.07);
+}
+
+@supports not selector(:has(*)) {
+  .check input[type="checkbox"]:checked {
+    background: #fffaf4;
+  }
+}
